@@ -8,61 +8,82 @@
 
 ### Current Project Structure
 AgriSeva/
-├── src/                    # React frontend source
-├── public/                 # Public assets
-├── backend/               # FastAPI backend
-├── package.json           # Frontend dependencies
-├── vercel.json           # Frontend deployment config
-├── backend/vercel.json   # Backend deployment config
+├── frontend/              # React frontend application
+│   ├── src/              # React source files
+│   ├── public/           # Public assets
+│   ├── package.json      # Frontend dependencies
+│   └── .env.production   # Production environment variables
+├── backend/              # FastAPI backend
+│   ├── main.py          # FastAPI application
+│   ├── requirements.txt # Backend dependencies
+│   └── vercel.json      # Backend deployment config
+├── ml-models/           # Machine learning models
+├── vercel.json          # Root deployment config
 └── README.md
 
-### Step 1: Deploy Frontend (React App)
+### Step 1: Deploy Backend (FastAPI) First
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Click "New Project"
 3. Import your GitHub repository: `shivasubrahmanya/AgriSeva`
-4. **Root Directory**: Leave as root (default)
-5. **Framework Preset**: Create React App (auto-detected)
+4. **Root Directory**: Set to `backend` 
+5. **Framework Preset**: Other
+6. **Project Name**: `agriseva-backend` (or your choice)
+7. **Build Command**: Leave empty
+8. **Output Directory**: Leave empty
+9. Deploy and **copy the backend URL**
+   - Example: `https://agriseva-backend-shivasubrahmanya.vercel.app`
+
+### Step 2: Deploy Frontend (React App)
+1. Create **another Vercel project**
+2. Import the **same GitHub repository**: `shivasubrahmanya/AgriSeva`
+3. **Root Directory**: Set to `frontend` 
+4. **Framework Preset**: Create React App (auto-detected)
+5. **Project Name**: `agriseva` (or your choice)
 6. **Build Command**: `npm run build` (auto-detected)
 7. **Output Directory**: `build` (auto-detected)
-8. Deploy and copy the frontend URL
+8. **Environment Variables** - Add this:
+   ```
+   Key: REACT_APP_API_URL
+   Value: https://agriseva-backend-shivasubrahmanya.vercel.app
+   ```
+   (Use your actual backend URL from Step 1)
+9. Deploy
 
-### Step 2: Deploy Backend (FastAPI)
-1. Create another Vercel project
-2. Import the same GitHub repository
-3. Set **Root Directory** to `backend`
-4. **Framework Preset**: Other
-5. **Build Command**: `pip install -r requirements.txt`
-6. Deploy and copy the backend URL
-
-### Step 3: Connect Frontend to Backend
-1. Go to your frontend Vercel project
-2. Go to **Settings** → **Environment Variables**
-3. Add: `REACT_APP_API_URL` = your backend URL from Step 2
-4. Redeploy the frontend
-
-### Step 4: Update CORS Settings
-Update your backend `main.py` CORS settings:
+### Step 3: Update CORS Settings
+After both deployments, update your `backend/main.py`:
 ```python
-allow_origins=[
-    "http://localhost:3000",
-    "https://your-frontend-url.vercel.app",  # Add your actual frontend URL
-],
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://agriseva-shivasubrahmanya.vercel.app",  # Your frontend URL
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 ```
 
-### Environment Variables Setup
+### Step 4: Test Your Deployment
+1. **Frontend URL**: `https://agriseva-shivasubrahmanya.vercel.app`
+2. **Backend URL**: `https://agriseva-backend-shivasubrahmanya.vercel.app`
+3. **API Test**: Visit `https://agriseva-backend-shivasubrahmanya.vercel.app/` to see API response
+
+### Automatic Deployments 
+- Every push to `main` branch automatically deploys both projects
+- Frontend and backend deploy independently
+- Zero configuration needed after initial setup
+
+### Environment Variables
 - **Frontend**: `REACT_APP_API_URL` (set in Vercel dashboard)
 - **Backend**: No environment variables needed for basic setup
 
-### Automatic Deployments
-Every push to `main` branch triggers automatic deployments on both projects.
+### Troubleshooting
+- **Frontend 404**: Ensure root directory is set to `frontend`
+- **Backend 500**: Check deployment logs and ensure `requirements.txt` is correct
+- **CORS Errors**: Update CORS origins with your actual frontend URL
+- **API Connection**: Verify `REACT_APP_API_URL` matches your backend URL
 
-## Why This Structure is Better
-- Frontend in root = easier Vercel deployment
-- Separate backend folder = clean separation
-- Single repository = easier management
-- Auto-detection of React app by Vercel
-
-## Troubleshooting
-- If frontend deployment fails, check build logs in Vercel
-- Ensure `package.json` is in root directory
-- For backend issues, check that `requirements.txt` is in backend folder
+### Project URLs (Replace with your actual URLs)
+- **Frontend**: `https://agriseva-shivasubrahmanya.vercel.app`
+- **Backend**: `https://agriseva-backend-shivasubrahmanya.vercel.app`
