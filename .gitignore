@@ -1,48 +1,23 @@
-# Environment variables
-.env
-.env.local
-.env.production.local
-.env.development.local
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# Build outputs
-build/
-dist/
-*.egg-info/
+# testing
+/coverage
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+# production
+/build
 
-# OS files
+# misc
 .DS_Store
-Thumbs.db
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Logs
-*.log
-logs/
-
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Database
-*.db
-*.sqlite3
-
-# Temporary files
-*.tmp
-*.temp
-
-# Vercel
-.vercel
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
