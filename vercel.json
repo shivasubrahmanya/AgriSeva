@@ -1,15 +1,9 @@
 {
   "version": 2,
   "name": "agriseva-frontend",
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend/build"
-      }
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "installCommand": "npm install",
   "routes": [
     {
       "src": "/static/(.*)",
